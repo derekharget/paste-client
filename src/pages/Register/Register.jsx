@@ -1,21 +1,32 @@
 import React, {useState} from 'react';
+import Auth from '../../hooks/Auth/Auth';
 import Box from "@mui/material/Box";
 import {CircularProgress, TextField, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import {useForm} from "react-hook-form";
 import {useMutation, useQueryClient} from "react-query";
-import Auth from '../../hooks/Auth/Auth';
+import { useHistory, Redirect } from "react-router-dom";
 
 
-const Login = () => {
+
+
+const Register = () => {
     const {register, handleSubmit} = useForm();
     const [isError, setIsError] = useState(false);
 
     const queryClient = useQueryClient();
+    const history = useHistory();
+
+
+    // if(Auth.getCurrentUser()) {
+    //     history.push("/dashboard");
+    // }
+
 
     const {mutate, isLoading} = useMutation(Auth.register, {
         onSuccess: data => {
-            console.log(data);
+            history.push("/dashboard");
+            console.log("data2: ",data);
             setIsError(false);
         },
         onError: () => {
@@ -29,12 +40,15 @@ const Login = () => {
 
     const onSubmit = data => {
         mutate(data);
-        console.log(data);
+        console.log('Data: ',data);
     }
 
 
     return (
         <Box sx={{textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%'}}>
+
+            {Auth.getCurrentUser() && <Redirect to="/dashboard" />}
+
             <Typography variant="h4">Register</Typography>
 
             <Box sx={{maxWidth: 'md', bgcolor: '#cfe8fc', mt: 4}} component="form"
@@ -105,4 +119,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Register;
