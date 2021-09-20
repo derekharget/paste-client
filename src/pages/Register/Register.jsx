@@ -13,7 +13,7 @@ const Login = () => {
 
     const queryClient = useQueryClient();
 
-    const {mutate, isLoading} = useMutation(Auth.login, {
+    const {mutate, isLoading} = useMutation(Auth.register, {
         onSuccess: data => {
             console.log(data);
             setIsError(false);
@@ -35,7 +35,7 @@ const Login = () => {
 
     return (
         <Box sx={{textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%'}}>
-            <Typography variant="h4">Login</Typography>
+            <Typography variant="h4">Register</Typography>
 
             <Box sx={{maxWidth: 'md', bgcolor: '#cfe8fc', mt: 4}} component="form"
                  onSubmit={handleSubmit(onSubmit)}>
@@ -48,6 +48,17 @@ const Login = () => {
                     autoComplete="off"
                 />
 
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    {...register("username")}
+                    label="Username"
+                    autoComplete="off"
+                />
+
+
+
 
                 <TextField
                     margin="normal"
@@ -59,6 +70,19 @@ const Login = () => {
                     {...register("password")}
                     autoComplete="current-password"
                 />
+
+                <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password_confirmation"
+                    label="Password Confirmation"
+                    type="password"
+                    {...register("password_confirmation")}
+                    autoComplete="current-password"
+                />
+
+
                 {isError && <Typography variant="subtitle2" sx={{ color: 'red'}}>Error Occurred Processing Your Request</Typography>}
 
                 <Button
@@ -67,6 +91,7 @@ const Login = () => {
                     variant="contained"
                     sx={{mt: 3, mb: 2, maxWidth: {sm: '100%', md: '50%'}}}
                 >
+
                     {!isLoading && (`Sign In`)}
                     {isLoading && (
                         <CircularProgress
