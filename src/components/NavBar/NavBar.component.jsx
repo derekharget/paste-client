@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -9,12 +9,12 @@ import Button from "@mui/material/Button";
 
 import LoginIcon from '@mui/icons-material/Login';
 import RegisterIcon from '@mui/icons-material/PlaylistAddCheck';
+import LogoutIcon from '@mui/icons-material/Logout';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 import {Link} from 'react-router-dom';
-import { styled } from '@mui/styles';
-
-
-
+import {styled} from '@mui/styles';
+import Auth from "../../hooks/Auth/Auth";
 
 
 const Logo = styled(Link)({
@@ -24,6 +24,16 @@ const Logo = styled(Link)({
 
 
 const Navbar = () => {
+    //const [isLoggedIn, setIsLoggedIn, ] = useState(false);
+
+    // useEffect(() => {
+    //     if(Auth.getCurrentUser()){
+    //         setIsLoggedIn(true);
+    //     } else {
+    //         setIsLoggedIn(false);
+    //     }
+    //     console.log('data');
+    // }, );
 
     return (
         <>
@@ -48,11 +58,21 @@ const Navbar = () => {
 
                                 </Typography>
 
-                                <Button to="/login" component={Link} color="inherit"
-                                        startIcon={<LoginIcon/>} sx={{ mr: 3 }}>Login</Button>
-                                <Button to="/register" component={Link} color="inherit" variant="outlined"
-                                        startIcon={<RegisterIcon/>}>Register</Button>
-
+                                {Auth.getCurrentUser() ? (
+                                    <>
+                                        <Button to="/dashboard" component={Link} color="inherit"
+                                                startIcon={<DashboardIcon/>} sx={{mr: 3}}>Dashboard</Button>
+                                        <Button to="/register" component={Link} color="inherit" variant="outlined"
+                                                startIcon={<LogoutIcon/>}>Logout</Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Button to="/login" component={Link} color="inherit"
+                                                startIcon={<LoginIcon/>} sx={{mr: 3}}>Login</Button>
+                                        <Button to="/register" component={Link} color="inherit" variant="outlined"
+                                                startIcon={<RegisterIcon/>}>Register</Button>
+                                    </>
+                                )}
                             </Toolbar>
                         </AppBar>
                     </Box>

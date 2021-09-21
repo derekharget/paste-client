@@ -5,7 +5,7 @@ import {CircularProgress, TextField, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import {useForm} from "react-hook-form";
 import {useMutation, useQueryClient} from "react-query";
-import { useHistory, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 
 
@@ -15,17 +15,10 @@ const Register = () => {
     const [isError, setIsError] = useState(false);
 
     const queryClient = useQueryClient();
-    const history = useHistory();
-
-
-    // if(Auth.getCurrentUser()) {
-    //     history.push("/dashboard");
-    // }
 
 
     const {mutate, isLoading} = useMutation(Auth.register, {
         onSuccess: data => {
-            history.push("/dashboard");
             console.log("data2: ",data);
             setIsError(false);
         },
