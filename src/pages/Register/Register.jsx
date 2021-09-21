@@ -19,7 +19,7 @@ const Register = () => {
 
     const {mutate, isLoading} = useMutation(Auth.register, {
         onSuccess: data => {
-            console.log("data2: ",data);
+            window.location.reload(false);
             setIsError(false);
         },
         onError: () => {

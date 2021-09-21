@@ -26,6 +26,7 @@ const routes = [
 
 function App() {
     return (
+
         <Box>
             <Router>
                 <Navbar/>

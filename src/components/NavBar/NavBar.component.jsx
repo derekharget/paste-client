@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,6 +11,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import RegisterIcon from '@mui/icons-material/PlaylistAddCheck';
 import LogoutIcon from '@mui/icons-material/Logout';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import AddIcon from '@mui/icons-material/Add';
 
 import {Link} from 'react-router-dom';
 import {styled} from '@mui/styles';
@@ -24,16 +25,10 @@ const Logo = styled(Link)({
 
 
 const Navbar = () => {
-    //const [isLoggedIn, setIsLoggedIn, ] = useState(false);
 
-    // useEffect(() => {
-    //     if(Auth.getCurrentUser()){
-    //         setIsLoggedIn(true);
-    //     } else {
-    //         setIsLoggedIn(false);
-    //     }
-    //     console.log('data');
-    // }, );
+    const refresh = () => {
+        window.location.reload(false);
+    }
 
     return (
         <>
@@ -60,9 +55,14 @@ const Navbar = () => {
 
                                 {Auth.getCurrentUser() ? (
                                     <>
+                                        <Button to="/new" component={Link} color="inherit"
+                                                startIcon={<AddIcon/>} sx={{mr: 3}}>New Paste</Button>
                                         <Button to="/dashboard" component={Link} color="inherit"
                                                 startIcon={<DashboardIcon/>} sx={{mr: 3}}>Dashboard</Button>
-                                        <Button to="/register" component={Link} color="inherit" variant="outlined"
+                                        <Button onClick={()=>{
+                                            Auth.logout();
+                                            refresh();
+                                        }} to="/" component={Link} color="inherit" variant="outlined"
                                                 startIcon={<LogoutIcon/>}>Logout</Button>
                                     </>
                                 ) : (
