@@ -9,20 +9,10 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import {Link} from "react-router-dom";
 import {styled} from "@mui/styles";
-
-
-const dummyPasteData = [
-    {slug: 'ZCDLCYgW', name: 'PHP class', date: '3 Minutes Ago'},
-    {slug: 'IEZoUu8w', name: 'Python class', date: '3 Minutes Ago'},
-    {slug: 'v646nOVs', name: 'C class', date: '3 Minutes Ago'},
-    {slug: 'Zh1uuMyl', name: 'hello class', date: '3 Minutes Ago'},
-    {slug: '4bN1BV5k', name: 'C# class', date: '3 Minutes Ago'},
-    {slug: '9fvJOIcN', name: 'React class', date: '3 Minutes Ago'},
-    {slug: 'bAAKnals', name: 'Javascript class', date: '3 Minutes Ago'},
-    {slug: 'FV5fGiJH', name: 'fd class', date: '3 Minutes Ago'},
-    {slug: 'CZ6nu4Ca', name: 'sf class', date: '3 Minutes Ago'},
-    {slug: '4yENlzys', name: '404 test', date: '3 Minutes Ago'}
-];
+import {useQuery} from "react-query";
+import axios from "axios";
+import {CircularProgress} from "@mui/material";
+import {formatDistance} from "date-fns";
 
 
 const RecentPasteLink = styled(Link)({
@@ -32,39 +22,76 @@ const RecentPasteLink = styled(Link)({
 
 
 const RecentPastes = () => {
+
+    const {
+        data: recentPastes,
+        isLoading,
+        isError,
+        isSuccess
+    } = useQuery('latestPastes', async () => {
+        const {data} = await axios.get(`http://localhost:8000/api/latest`);
+        return data.data;
+    }, {
+        retry: false,
+        refetchOnWindowFocus: false, // Disable reload on focus
+        cacheTime: 1000 * 60 * 15 //Cache results for 15 Minutes
+    });
+
+
+    const cutTitleShort = (title) => {
+        if(title.length < 12) return title;
+
+        return title.substring(0, 12) + '...';
+    }
+
     return (
         <Box sx={{width: '100%', bgcolor: '#cfe8fc'}}>
             <Typography variant="h5">Recent Pastes</Typography>
 
-            <TableContainer>
-                <Table sx={{minWidth: 250}} size="small">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Ago</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {dummyPasteData.map((row) => (
-                            <TableRow
-                                key={row.slug}
-                                sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                            >
-                                <TableCell>
-                                    <RecentPasteLink
-                                        to={`/paste/${row.slug}`}
-                                    >
-                                        {row.name}
-                                    </RecentPasteLink>
-                                </TableCell>
-                                <TableCell>{row.date}</TableCell>
+            {isLoading && (<Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignContent: 'center',
+                    flexDirection: 'column',
+                    width: '100%',
+                    height: '100%'
+                }}><CircularProgress/></Box>)}
+
+            {isSuccess && !isError && (
+                <TableContainer>
+                    <Table sx={{minWidth: 250}} size="small">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Name</TableCell>
+                                <TableCell>Ago</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {recentPastes.map((paste) => (
+                                <TableRow
+                                    key={paste.id}
+                                    sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                >
+                                    <TableCell>
+                                        <RecentPasteLink
+                                            to={`/paste/${paste.slug}`}
+                                        >
+                                            {cutTitleShort(paste.title)}
+                                        </RecentPasteLink>
+                                    </TableCell>
+                                    <TableCell>{formatDistance(new Date(paste.updated_at), new Date(), {
+                                        addSuffix: true
+                                    })}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )}
         </Box>
     );
-};
+}
+;
 
 export default RecentPastes;

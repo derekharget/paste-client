@@ -1,17 +1,5 @@
 import axios from 'axios';
 
-
-// const Login = async (data) => {
-//     const payload = await axios.post('http://127.0.0.1:8000/api/login', data);
-//
-//     payload.then((response) => {
-//
-//     })
-//
-//     return response.data;
-// };
-
-
 const API_URL = "http://127.0.0.1:8000/api/";
 
 const register = data => {
@@ -21,7 +9,7 @@ const register = data => {
         }
 
         return response.data;
-    });;
+    });
 };
 
 const login = (data) => {
@@ -44,9 +32,12 @@ const getCurrentUser = () => {
     return JSON.parse(localStorage.getItem("user"));
 };
 
-export default {
+
+const AuthService = {
     register,
     login,
     logout,
     getCurrentUser,
 };
+
+export default AuthService;

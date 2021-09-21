@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import Highlight from 'react-highlight'
 
 import PasteClass from './stackoverflow-light.css';
+import {formatDistance} from "date-fns";
 
 const Paste = () => {
 
@@ -37,6 +38,7 @@ const Paste = () => {
                 flexDirection: 'column',
                 alignItems: 'center',
                 alignContent: 'center',
+                height: '300px',
                 m: 2
             }}>
 
@@ -52,10 +54,12 @@ const Paste = () => {
                 {isSuccess && !isError && (
                     <Box sx={{ width: '100%'}}>
                         <Typography variant="h4">
-                            Lorem Ipsum
+                            {data.title}
                         </Typography>
                         <Typography variant="caption">
-                            3 Minutes ago
+                            {formatDistance(new Date(data.created_at), new Date(), {
+                                addSuffix: true
+                            })}
                         </Typography>
                         <Box sx={{backgroundColor: '#f6f6f6', border: '1px solid black', overflow: 'auto', textAlign: 'left', p: 0, mt: 2}}>
                             <Highlight language='HTML' className={PasteClass}>

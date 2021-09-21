@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import {useForm} from "react-hook-form";
 import {useMutation, useQueryClient} from "react-query";
 import Auth from '../../hooks/Auth/Auth';
+import {Redirect} from "react-router-dom";
 
 
 const Login = () => {
@@ -35,6 +36,9 @@ const Login = () => {
 
     return (
         <Box sx={{textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%'}}>
+
+            {Auth.getCurrentUser() && <Redirect to="/dashboard" />}
+
             <Typography variant="h4">Login</Typography>
 
             <Box sx={{maxWidth: 'md', bgcolor: '#cfe8fc', mt: 4}} component="form"
