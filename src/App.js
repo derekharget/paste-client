@@ -12,6 +12,7 @@ import Paste from "./pages/Paste/Paste";
 import Layout from "./components/Layout/Layout";
 import NotFound from "./pages/NotFound/NotFound";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import EditPaste from "./pages/EditPaste/EditPaste";
 
 
 const routes = [
@@ -19,6 +20,7 @@ const routes = [
     {path: '/register', name: 'Register', Component: Register, exact: false},
     {path: '/login', name: 'Login', Component: Login, exact: false},
     {path: '/dashboard', name: 'Dashboard', Component: Dashboard, exact: false},
+    {path: '/edit/:id', name: 'EditPaste', Component: EditPaste, exact: false},
     {path: '/new', name: 'NewPaste', Component: NewPaste, exact: true},
     {path: '/paste/:id', name: 'Paste', Component: Paste, exact: false},
     {path: '*', name: 'NotFound', Component: NotFound, exact: false},

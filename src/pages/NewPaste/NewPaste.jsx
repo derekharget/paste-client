@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Auth from "../../hooks/Auth/Auth";
 import {Redirect} from "react-router-dom";
 import Box from "@mui/material/Box";
-import {Checkbox, CircularProgress, FormControlLabel, TextField, Typography} from "@mui/material";
+import {CircularProgress, TextField, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import {useForm} from "react-hook-form";
 import {useMutation, useQueryClient} from "react-query";
@@ -79,12 +79,6 @@ const NewPaste = () => {
                         fullWidth
                         {...register("paste")}
                         rows={4}
-                    />
-
-                    <FormControlLabel
-                        control={<Checkbox defaultChecked />}
-                        label="Private"
-                        {...register("isPrivate")}
                     />
 
 

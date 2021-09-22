@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import Auth from "../../hooks/Auth/Auth";
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import Box from "@mui/material/Box";
-import {CircularProgress, Typography} from "@mui/material";
+import {CircularProgress, IconButton, Typography} from "@mui/material";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -19,8 +19,10 @@ import axios from "axios";
 import {formatDistance} from "date-fns";
 
 const Dashboard = () => {
-    const {access_token: userToken} = Auth.getCurrentUser();
+    const userToken = Auth.getCurrentUser();
+
     const [pastes, setPastes] = useState([])
+
 
     const {
         isLoading,
@@ -32,7 +34,7 @@ const Dashboard = () => {
                 headers:
                     {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${userToken}`
+                        'Authorization': `Bearer ${userToken.access_token}`
                     }
             });
         console.log(data);
@@ -46,13 +48,15 @@ const Dashboard = () => {
 
 
     const deletePaste = pasteSlug => {
-        return axios.delete(`http://localhost:8000/api/paste/${pasteSlug}`, { headers:
+        return axios.delete(`http://localhost:8000/api/paste/${pasteSlug}`, {
+            headers:
                 {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userToken}`
-                }}).then((response) => {
+                    'Authorization': `Bearer ${userToken.access_token}`
+                }
+        }).then((response) => {
             console.log(response);
-            if(response.status === 200){
+            if (response.status === 200) {
                 setPastes(pastes.filter(p => p.slug !== pasteSlug));
             }
 
@@ -103,11 +107,22 @@ const Dashboard = () => {
                                         <TableCell component="th" scope="row">
                                             {paste.title}
                                         </TableCell>
-                                        <TableCell align="right">{formatDistance(new Date(paste.updated_at), new Date(), {
+                                        <TableCell
+                                            align="right">{formatDistance(new Date(paste.updated_at), new Date(), {
                                             addSuffix: true
                                         })}</TableCell>
-                                        <TableCell align="right"><EditIcon sx={{color: red[500]}}/></TableCell>
-                                        <TableCell align="right"><DeleteIcon sx={{color: red[500]}} onClick={()=>{deletePaste(paste.slug)}}/></TableCell>
+                                        <TableCell align="right"><IconButton component={Link}
+                                                                             to={`/edit/${paste.slug}`}>
+                                            <EditIcon sx={{color: red[500]}}/>
+                                        </IconButton>
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <IconButton onClick={() => {
+                                                deletePaste(paste.slug)
+                                            }}>
+                                                <DeleteIcon sx={{color: red[500], cursor: 'pointer'}}/>
+                                            </IconButton>
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
