@@ -62,7 +62,7 @@ const Paste = () => {
                             })}
                         </Typography>
                         <Box sx={{backgroundColor: '#f6f6f6', border: '1px solid black', overflow: 'auto', textAlign: 'left', p: 0, mt: 2}}>
-                            <Highlight language='HTML' className={PasteClass}>
+                            <Highlight autodetect className={PasteClass}>
                                 {data.paste}
                             </Highlight>
                         </Box>
