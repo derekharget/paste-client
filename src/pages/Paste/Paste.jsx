@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import {useQuery} from "react-query";
 import {useParams} from 'react-router-dom';
 import NotFound from "../NotFound/NotFound";
@@ -10,6 +9,7 @@ import Highlight from 'react-highlight'
 
 import PasteClass from './stackoverflow-light.css';
 import {formatDistance} from "date-fns";
+import PasteAPI from "../../_api/Pastes/Paste";
 
 const Paste = () => {
 
@@ -21,10 +21,7 @@ const Paste = () => {
         isLoading,
         isError,
         isSuccess
-    } = useQuery(['paste', id], async () => {
-        const {data} = await axios.get(`http://localhost:8000/api/paste/${id}`);
-        return data.data;
-    }, {
+    } = useQuery(['paste', id], async ()=>{ return await PasteAPI.getPaste(id)}, {
         retry: false,
         refetchOnWindowFocus: false, // Disable reload on focus
         cacheTime: 1000 * 60 * 15 //Cache results for 15 Minutes

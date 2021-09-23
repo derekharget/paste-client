@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import {useForm} from "react-hook-form";
 import {useMutation, useQuery, useQueryClient} from "react-query";
-import Auth from "../../hooks/Auth/Auth";
-import axios from "axios";
 import {Redirect, useParams} from "react-router-dom";
 import Box from "@mui/material/Box";
-import { CircularProgress, TextField, Typography} from "@mui/material";
+import {CircularProgress, TextField, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
+import AuthService from "../../_services/Auth/AuthService";
+import PasteAPI from "../../_api/Pastes/Paste";
 
 const EditPaste = () => {
     const {register, handleSubmit, setValue} = useForm();
@@ -15,8 +15,6 @@ const EditPaste = () => {
     const [successPaste, setSuccessPaste] = useState(false);
     const [newPasteURL, setNewPasteURL] = useState('');
     const queryClient = useQueryClient();
-    const {access_token: userToken} = Auth.getCurrentUser();
-
     const {id} = useParams();
 
 
@@ -26,10 +24,11 @@ const EditPaste = () => {
         isError: originalError,
         isSuccess: originalSuccess
     } = useQuery(['editPaste', id], async () => {
-        const {data} = await axios.get(`http://localhost:8000/api/paste/${id}`);
-        setValue('title', data.data.title);
-        setValue('paste', data.data.paste);
-        return data.data;
+        const data = await PasteAPI.getPaste(id);
+        console.log(data);
+        setValue('title', data.title);
+        setValue('paste', data.paste);
+        return data;
     }, {
         retry: false,
         refetchOnWindowFocus: false, // Disable reload on focus
@@ -37,22 +36,10 @@ const EditPaste = () => {
     });
 
 
-    const updatePaste = data => {
-        return axios.patch(`http://localhost:8000/api/paste/${id}`, data, {
-            headers:
-                {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userToken}`
-                }
-        }).then((response) => {
-            return response.data;
-        });
-    };
-
-
-    const {mutate, isLoading} = useMutation(updatePaste, {
+    const {mutate, isLoading} = useMutation(async (pasteData) => {
+        return await PasteAPI.updatePaste(id, pasteData);
+    }, {
         onSuccess: data => {
-            //console.log(data);
             setIsError(false);
             setNewPasteURL(data.data.slug);
             setSuccessPaste(true);
@@ -69,12 +56,11 @@ const EditPaste = () => {
 
     const onSubmit = data => {
         mutate(data);
-        console.log(data);
     }
 
     return (
         <>
-            {!Auth.getCurrentUser() && <Redirect to="/login"/>}
+            {!AuthService.handle_getCurrentUser() && <Redirect to="/login"/>}
             {successPaste && <Redirect to={`/paste/${newPasteURL}`}/>}
 
 
@@ -91,7 +77,7 @@ const EditPaste = () => {
                     <Typography variant="h4">Edit Paste - ID: {originalPaste.slug}</Typography>
 
 
-                    <Box sx={{maxWidth: 'md', bgcolor: '#cfe8fc', mt: 4}} component="form"
+                    <Box sx={{maxWidth: 'md', mt: 4}} component="form"
                          onSubmit={handleSubmit(onSubmit)}>
                         <TextField
                             margin="normal"
@@ -113,7 +99,8 @@ const EditPaste = () => {
                         />
 
 
-                        {originalError && isError && <Typography variant="subtitle2" sx={{color: 'red'}}>Error Occurred Processing Your
+                        {originalError && isError &&
+                        <Typography variant="subtitle2" sx={{color: 'red'}}>Error Occurred Processing Your
                             Request</Typography>}
 
                         <Button
@@ -122,7 +109,7 @@ const EditPaste = () => {
                             variant="contained"
                             sx={{mt: 3, mb: 2, maxWidth: {sm: '100%', md: '50%'}}}
                         >
-                            {!isLoading && (`Sign In`)}
+                            {!isLoading && (`Edit Paste`)}
                             {isLoading && (
                                 <CircularProgress
                                     sx={{color: 'white', alignItems: 'left'}}

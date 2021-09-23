@@ -2,8 +2,6 @@ import React from 'react';
 import Box from "@mui/material/Box";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-// import IconButton from "@mui/material/IconButton";
-// import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
@@ -15,8 +13,7 @@ import AddIcon from '@mui/icons-material/Add';
 
 import {Link} from 'react-router-dom';
 import {styled} from '@mui/styles';
-import Auth from "../../hooks/Auth/Auth";
-
+import AuthService from "../../_services/Auth/AuthService";
 
 const Logo = styled(Link)({
     textDecoration: 'none',
@@ -48,19 +45,19 @@ const Navbar = () => {
                                 {/*</IconButton>*/}
                                 <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                                     <Logo to="/">
-                                        Pastebin
+                                        Paste
                                     </Logo>
 
                                 </Typography>
 
-                                {Auth.getCurrentUser() ? (
+                                {AuthService.handle_getCurrentUser() ? (
                                     <>
                                         <Button to="/new" component={Link} color="inherit"
                                                 startIcon={<AddIcon/>} sx={{mr: 3}}>New Paste</Button>
                                         <Button to="/dashboard" component={Link} color="inherit"
                                                 startIcon={<DashboardIcon/>} sx={{mr: 3}}>Dashboard</Button>
                                         <Button onClick={()=>{
-                                            Auth.logout();
+                                            AuthService.handle_logout();
                                             refresh();
                                         }} to="/" component={Link} color="inherit" variant="outlined"
                                                 startIcon={<LogoutIcon/>}>Logout</Button>

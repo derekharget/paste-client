@@ -4,8 +4,10 @@ import {CircularProgress, TextField, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import {useForm} from "react-hook-form";
 import {useMutation, useQueryClient} from "react-query";
-import Auth from '../../hooks/Auth/Auth';
 import {Redirect} from "react-router-dom";
+
+import AuthService from "../../_services/Auth/AuthService";
+import AuthAPI from "../../_api/Auth/Auth";
 
 
 const Login = () => {
@@ -14,9 +16,8 @@ const Login = () => {
 
     const queryClient = useQueryClient();
 
-    const {mutate, isLoading} = useMutation(Auth.login, {
+    const {mutate, isLoading} = useMutation(AuthAPI.login_api, {
         onSuccess: data => {
-            console.log(data);
             setIsError(false);
         },
         onError: () => {
@@ -30,18 +31,17 @@ const Login = () => {
 
     const onSubmit = data => {
         mutate(data);
-        console.log(data);
     }
 
 
     return (
         <Box sx={{textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%'}}>
 
-            {Auth.getCurrentUser() && <Redirect to="/dashboard" />}
+            {AuthService.handle_getCurrentUser() && <Redirect to="/dashboard" />}
 
             <Typography variant="h4">Login</Typography>
 
-            <Box sx={{maxWidth: 'md', bgcolor: '#cfe8fc', mt: 4}} component="form"
+            <Box sx={{maxWidth: 'md', mt: 4}} component="form"
                  onSubmit={handleSubmit(onSubmit)}>
                 <TextField
                     margin="normal"

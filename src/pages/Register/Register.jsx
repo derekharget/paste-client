@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import Auth from '../../hooks/Auth/Auth';
 import Box from "@mui/material/Box";
 import {CircularProgress, TextField, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
@@ -7,6 +6,8 @@ import {useForm} from "react-hook-form";
 import {useMutation, useQueryClient} from "react-query";
 import { Redirect } from "react-router-dom";
 
+import AuthService from "../../_services/Auth/AuthService";
+import AuthAPI from '../../_api/Auth/Auth';
 
 
 
@@ -17,7 +18,7 @@ const Register = () => {
     const queryClient = useQueryClient();
 
 
-    const {mutate, isLoading} = useMutation(Auth.register, {
+    const {mutate, isLoading} = useMutation(AuthAPI.register_api, {
         onSuccess: data => {
             window.location.reload(false);
             setIsError(false);
@@ -33,18 +34,17 @@ const Register = () => {
 
     const onSubmit = data => {
         mutate(data);
-        console.log('Data: ',data);
     }
 
 
     return (
         <Box sx={{textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%'}}>
 
-            {Auth.getCurrentUser() && <Redirect to="/dashboard" />}
+            {AuthService.handle_getCurrentUser() && <Redirect to="/dashboard" />}
 
             <Typography variant="h4">Register</Typography>
 
-            <Box sx={{maxWidth: 'md', bgcolor: '#cfe8fc', mt: 4}} component="form"
+            <Box sx={{maxWidth: 'md', mt: 4}} component="form"
                  onSubmit={handleSubmit(onSubmit)}>
                 <TextField
                     margin="normal"
@@ -99,7 +99,7 @@ const Register = () => {
                     sx={{mt: 3, mb: 2, maxWidth: {sm: '100%', md: '50%'}}}
                 >
 
-                    {!isLoading && (`Sign In`)}
+                    {!isLoading && (`Register`)}
                     {isLoading && (
                         <CircularProgress
                             sx={{color: 'white', alignItems: 'left'}}
