@@ -10,9 +10,9 @@ import TableRow from '@mui/material/TableRow';
 import {Link} from "react-router-dom";
 import {styled} from "@mui/styles";
 import {useQuery} from "react-query";
-import axios from "axios";
 import {CircularProgress} from "@mui/material";
 import {formatDistance} from "date-fns";
+import PasteAPI from "../../_api/Pastes/Paste";
 
 
 const RecentPasteLink = styled(Link)({
@@ -28,10 +28,7 @@ const RecentPastes = () => {
         isLoading,
         isError,
         isSuccess
-    } = useQuery('latestPastes', async () => {
-        const {data} = await axios.get(`http://localhost:8000/api/latest`);
-        return data.data;
-    }, {
+    } = useQuery('latestPastes', PasteAPI.getLatestPosts, {
         retry: false,
         refetchOnWindowFocus: false, // Disable reload on focus
         cacheTime: 1000 * 60 * 15 //Cache results for 15 Minutes
@@ -45,7 +42,7 @@ const RecentPastes = () => {
     }
 
     return (
-        <Box sx={{width: '100%', bgcolor: '#cfe8fc'}}>
+        <Box sx={{width: '100%'}}>
             <Typography variant="h5">Recent Pastes</Typography>
 
             {isLoading && (<Box
