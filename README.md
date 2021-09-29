@@ -21,4 +21,4 @@ A simple pastebin clone that is built using React/Laravel.
 
 - npm run prod
 
-- Setup nginx or your preferred website to redirect all requests for the domain to index.html in the build directory.
+- Setup nginx or your preferred webserver to redirect all requests for the domain to index.html in the build directory.
